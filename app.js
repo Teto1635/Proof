@@ -1,4 +1,4 @@
-/* Defter — seri uygulaması */
+/* Proof — Prove it to yourself */
 (function(){
 'use strict';
 const S=window.SERI, DOC={}; S.docs.forEach(d=>DOC[d.id]=d);
@@ -204,7 +204,7 @@ function istatistik(){
 
 /* ---------- mühürler: sayı değil, dönüm noktası ---------- */
 const MUHUR=[
- {id:'defter',ad:'Defter açıldı',m:'0',sv:1,a:'Hafta 0 hazırlığının beş adımı tamam.',k:['takvim','2.2'],f:s=>s.hazirlik},
+ {id:'defter',ad:'Hazırlık tamam',m:'0',sv:1,a:'Hafta 0 hazırlığının beş adımı tamam.',k:['takvim','2.2'],f:s=>s.hazirlik},
  {id:'ilkcarpi',ad:'İlk çarpı',m:'✕',sv:1,a:'İlk program gününü işaretledin.',k:['disiplin','5.9'],f:s=>s.z.toplam>=1},
  {id:'z7',ad:'Yedi gün',m:'7',sv:1,a:'İki gün kuralıyla yedi çarpılık zincir.',k:['disiplin','5.4'],f:s=>s.z.en>=7},
  {id:'z21',ad:'Yirmi bir',m:'21',sv:2,a:'Zincirde yirmi bir çarpı — disiplin programının ölçütü kadar.',k:['disiplin','5.9'],f:s=>s.z.en>=21},
@@ -298,7 +298,7 @@ function kutla(){
   if(!kuyruk.length||$('.perde')) return;
   const m=kuyruk.shift(), t=al('muhur:'+m.id).tarih;
   levha(`<div class="kutlama">${muhurSVG(m,t)}<h2>${esc(m.ad)}</h2><p>${esc(m.a)}</p><p class="kaynak"><a href="${bolum(m.k[0],m.k[1])}" data-is="kapat">${esc(docAd(m.k[0]))} ${m.k[1]}</a></p>
-  <div class="sira" style="justify-content:center"><button class="dugme dolu" data-is="kapat">Deftere bas</button></div></div>`,()=>setTimeout(kutla,200));
+  <div class="sira" style="justify-content:center"><button class="dugme dolu" data-is="kapat">Tamam</button></div></div>`,()=>setTimeout(kutla,200));
 }
 let levhaSon=null;
 function levha(html,kapaninca){
@@ -343,7 +343,7 @@ const rehberMod=()=>al('ayar:gorunum','rehber')!=='ayrintili';
 IK.daha=sv('<circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/>');
 const NAVR=[['bugun','Bugün',IK.bugun],['yol','Yol',IK.yol],['kitaplik','Kitaplık',IK.kitap],['daha','Daha fazla',IK.daha]];
 const NAVAR={kurulum:'bugun',kayit:'kitaplik',hatirla:'kitaplik',oku:'kitaplik',test:'kitaplik',kayitokuma:'daha',arac:'daha',defter:'daha',muhurler:'daha',kart:'daha',ayarlar:'daha',kesinti:'daha',pazar:'bugun',aylik:'bugun',baslangic:'bugun',gecis:'bugun',mezuniyet:'bugun',basla:'bugun'};
-const NAV=[['bugun','Bugün',IK.bugun],['yol','Yol',IK.yol],['kitaplik','Kitaplık',IK.kitap],['defter','Defter',IK.defter],['muhurler','Mühürler',IK.muhur]];
+const NAV=[['bugun','Bugün',IK.bugun],['yol','Yol',IK.yol],['kitaplik','Kitaplık',IK.kitap],['defter','Kayıtlar',IK.defter],['muhurler','Mühürler',IK.muhur]];
 const NAVA={hatirla:'kitaplik',kayitokuma:'defter',muhurler:'muhurler',arac:'defter',oku:'kitaplik',test:'kitaplik',pazar:'defter',aylik:'defter',baslangic:'defter',gecis:'bugun',kesinti:'bugun',mezuniyet:'bugun',kart:'bugun',ayarlar:'bugun'};
 function ciz(koru){
   const r=rota(), key=r.ad+'/'+r.a, kok=$('#uygulama');
@@ -427,7 +427,7 @@ function icsUret(){
   const c=cizelge(); if(!c) return null;
   const saat=String(al('ayar:oturumSaat','19:00')||'19:00').slice(0,5), [hh,mm]=saat.split(':').map(Number), iki=x=>String(x).padStart(2,'0');
   const hmA=iki(hh)+iki(mm)+'00', t2=(hh*60+mm+20)%1440, hmB=iki(Math.floor(t2/60))+iki(t2%60)+'00';
-  const damga=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,''), L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Defter//Gelisim Serisi//TR','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Defter'];
+  const damga=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,''), L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Proof//Prove it to yourself//TR','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Proof'];
   const olay=o=>{ L.push('BEGIN:VEVENT','UID:'+o.uid+'@defter','DTSTAMP:'+damga);
     if(o.gun) L.push('DTSTART;VALUE=DATE:'+icsGun(o.gun),'DTEND;VALUE=DATE:'+icsGun(ekle(o.gun,1)),'TRANSP:TRANSPARENT');
     else L.push('DTSTART:'+icsGun(o.bas)+'T'+o.hm,'DURATION:PT'+o.dk+'M');
@@ -437,24 +437,24 @@ function icsUret(){
     L.push('END:VEVENT'); };
   const hf=c.filter(x=>x.tip==='hafta'&&x.w<=48), son=hf[hf.length-1], until=icsGun(ekle(son.bit,-1))+'T235959';
   c.forEach(seg=>{
-    if(seg.tip==='uzatma'){ const p=PROG.find(x=>x.gecis===seg.w); olay({uid:'uzatma-'+seg.w,gun:seg.bas,baslik:`Defter · Uzatma: ${p?p.ad:'program'}, ${fark(seg.bas,seg.bit)} gün`,aciklama:'Ölçüt tutmadı, program uzatıldı. Takvim bu kadar kayıyor.'}); return; }
+    if(seg.tip==='uzatma'){ const p=PROG.find(x=>x.gecis===seg.w); olay({uid:'uzatma-'+seg.w,gun:seg.bas,baslik:`Proof · Uzatma: ${p?p.ad:'program'}, ${fark(seg.bas,seg.bit)} gün`,aciklama:'Ölçüt tutmadı, program uzatıldı. Takvim bu kadar kayıyor.'}); return; }
     if(seg.w>48) return;
-    if(seg.w===0){ olay({uid:'hafta-0',gun:seg.bas,baslik:'Defter · Hafta 0: Hazırlık',aciklama:S.hazirlik.map(x=>duz(x.gun+': '+x.metin)).join('\n')}); return; }
+    if(seg.w===0){ olay({uid:'hafta-0',gun:seg.bas,baslik:'Proof · Hafta 0: Hazırlık',aciklama:S.hazirlik.map(x=>duz(x.gun+': '+x.metin)).join('\n')}); return; }
     const h=S.hafta[seg.w]; if(!h) return;
     const yeni=[...HAFTALIK,...AYLIK].filter(x=>x.bas===seg.w&&x.bas>1).map(x=>x.ad), sy=SEYREK.filter(x=>x.h.includes(seg.w));
     const ac=[h.oku.length?'Oku: '+h.oku.map(docAd).join(', '):'',h.raf.length?'Rafa: '+h.raf.map(docAd).join(', '):'',...h.not.map(duz),yeni.length?'Devreye giriyor: '+yeni.join(', '):'',sy.length?'Bu hafta: '+sy.map(x=>x.ad).join(', '):''].filter(Boolean).join('\n');
-    olay({uid:'hafta-'+seg.w,gun:seg.bas,baslik:`Defter · Hafta ${seg.w}: ${h.etiket}`,aciklama:ac});
-    sy.forEach(x=>olay({uid:`seyrek-${x.id}-${seg.w}`,gun:ekle(seg.bas,5),baslik:'Defter · '+x.ad,aciklama:`${docAd(x.k[0])} ${x.k[1]}`})); });
+    olay({uid:'hafta-'+seg.w,gun:seg.bas,baslik:`Proof · Hafta ${seg.w}: ${h.etiket}`,aciklama:ac});
+    sy.forEach(x=>olay({uid:`seyrek-${x.id}-${seg.w}`,gun:ekle(seg.bas,5),baslik:'Proof · '+x.ad,aciklama:`${docAd(x.k[0])} ${x.k[1]}`})); });
   PROG.forEach(p=>{ const st=program(p.id), b=st.bas?tarih(st.bas):haftaBas(p.bas), g=haftaBas(p.gecis), d=DOC[p.id];
-    if(b) olay({uid:'program-'+p.id,gun:b,baslik:`Defter · ${p.ad} programı başlıyor`,aciklama:`${uzunluk(p)} gün. İlk gün: ${docAd(p.id)} ${p.ilk}.`});
-    if(g) olay({uid:'gecis-'+p.id,gun:g,baslik:`Defter · Geçiş: ${p.ad} çıkış ölçütü`,aciklama:duz(d&&d.cikis)}); });
+    if(b) olay({uid:'program-'+p.id,gun:b,baslik:`Proof · ${p.ad} programı başlıyor`,aciklama:`${uzunluk(p)} gün. İlk gün: ${docAd(p.id)} ${p.ilk}.`});
+    if(g) olay({uid:'gecis-'+p.id,gun:g,baslik:`Proof · Geçiş: ${p.ad} çıkış ölçütü`,aciklama:duz(d&&d.cikis)}); });
   const b1=haftaBas(1);
-  if(b1){ olay({uid:'pazar',bas:ekle(b1,6),hm:hmA,dk:20,rrule:`FREQ=WEEKLY;BYDAY=SU;UNTIL=${until}`,baslik:'Defter · Pazar gözden geçirmesi',aciklama:PAZAR_S.map((x,i)=>`${i+1}. ${x.s}`).join('\n'),alarm:true});
+  if(b1){ olay({uid:'pazar',bas:ekle(b1,6),hm:hmA,dk:20,rrule:`FREQ=WEEKLY;BYDAY=SU;UNTIL=${until}`,baslik:'Proof · Pazar gözden geçirmesi',aciklama:PAZAR_S.map((x,i)=>`${i+1}. ${x.s}`).join('\n'),alarm:true});
     const ilkP=(y,m)=>{ const x=new Date(y,m,1); while(x.getDay()!==0) x.setDate(x.getDate()+1); return x; }; let a=ilkP(b1.getFullYear(),b1.getMonth()); if(a<b1) a=ilkP(b1.getFullYear(),b1.getMonth()+1);
-    olay({uid:'aylik',bas:a,hm:hmB,dk:30,rrule:`FREQ=MONTHLY;BYDAY=1SU;UNTIL=${until}`,baslik:'Defter · Aylık oturum',aciklama:'Yerleşti, sürüyor, gitti. Ve beş soru.',alarm:true}); }
+    olay({uid:'aylik',bas:a,hm:hmB,dk:30,rrule:`FREQ=MONTHLY;BYDAY=1SU;UNTIL=${until}`,baslik:'Proof · Aylık oturum',aciklama:'Yerleşti, sürüyor, gitti. Ve beş soru.',alarm:true}); }
   L.push('END:VCALENDAR'); return L.map(icsKatla).join('\r\n')+'\r\n';
 }
-IS.ics=()=>{ const t=icsUret(); if(!t){ bildiri('Önce başlangıç tarihini seç.'); return; } const b=new Blob([t],{type:'text/calendar;charset=utf-8'}), a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='defter-takvim.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); bildiri('Takvim dosyası indirildi.'); };
+IS.ics=()=>{ const t=icsUret(); if(!t){ bildiri('Önce başlangıç tarihini seç.'); return; } const b=new Blob([t],{type:'text/calendar;charset=utf-8'}), a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='proof-takvim.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); bildiri('Takvim dosyası indirildi.'); };
 const icsAlani=s0=>`<p style="margin:1.3rem 0 0"><strong>Takvim dosyası</strong></p><p class="aciklama" style="margin-top:.2rem">Hafta başları, program başlangıçları ve geçiş haftaları, pazar ve aylık oturumlar, seyrek oturumlar. Telefonun takvimine aktar.</p>${s0?`<label class="alan" for="os">Oturum saati</label><input class="yazi" type="time" id="os" data-rk="ayar:oturumSaat" value="${esc(al('ayar:oturumSaat','19:00'))}"><div class="sira"><button class="dugme" data-is="ics">Takvim dosyasını indir</button></div><p class="ipucu">Ayrı bir takvime aktar. Uzatma ya da kesinti olursa o takvimi silip dosyayı yeniden indir.</p>`:'<p class="ipucu">Önce başlangıç tarihini seç.</p>'}`;
 
 /* ================= BUGÜN ================= */
@@ -537,7 +537,7 @@ function ritimBlogu(s){
   if((g===0||g===6)&&s.w>=1&&!(al(pk)||{}).kapali) out.push(`<p><strong>Pazar gözden geçirmesi</strong><br><span class="aciklama">Üç soru, yirmi dakika.</span></p><div class="sira">${dugme('Gözden geçir','#/pazar','dolu')}</div>`);
   const ak='aylik:'+ymd(b).slice(0,7), ilkPazar=(()=>{ const x=new Date(b.getFullYear(),b.getMonth(),1); while(x.getDay()!==0) x.setDate(x.getDate()+1); return x; })();
   if(s.w>=1&&b>=ilkPazar&&!(al(ak)||{}).kapali) out.push(`<p><strong>Aylık oturum</strong><br><span class="aciklama">Yerleşti, sürüyor, gitti — ve beş soru.</span></p><div class="sira">${dugme('Oturumu aç','#/aylik')}</div>`);
-  SEYREK.filter(x=>x.h.includes(s.w)).forEach(x=>{ const k=`seyrek:${x.id}:${s.w}`; out.push(`<label class="onay"><input type="checkbox" data-rk="${k}" ${al(k)?'checked':''}><span class="kutu"></span><span><strong>${esc(x.ad)}</strong><small><a href="${bolum(x.k[0],x.k[1])}">${esc(docAd(x.k[0]))} ${x.k[1]}</a>${x.arac?` — <a href="#/arac/${x.arac}">defteri aç</a>`:''}${x.id==='yillik'?' — <a href="#/kayitokuma">kayıt okuması</a>':''}</small></span></label>`); });
+  SEYREK.filter(x=>x.h.includes(s.w)).forEach(x=>{ const k=`seyrek:${x.id}:${s.w}`; out.push(`<label class="onay"><input type="checkbox" data-rk="${k}" ${al(k)?'checked':''}><span class="kutu"></span><span><strong>${esc(x.ad)}</strong><small><a href="${bolum(x.k[0],x.k[1])}">${esc(docAd(x.k[0]))} ${x.k[1]}</a>${x.arac?` — <a href="#/arac/${x.arac}">aracı aç</a>`:''}${x.id==='yillik'?' — <a href="#/kayitokuma">kayıt okuması</a>':''}</small></span></label>`); });
   const yeni=[...HAFTALIK,...AYLIK].filter(x=>x.bas===s.w&&x.bas>1);
   if(yeni.length) out.push(`<p style="margin-top:.8rem"><strong>Bu hafta devreye giriyor</strong></p>${yeni.map(x=>`<a class="cip" href="${bolum(x.k[0],x.k[1])}">${esc(x.ad)}</a>`).join('')}`);
   return out.length?blok('Ritim',out.join('')):'';
@@ -548,7 +548,7 @@ function notBlogu(s){
 }
 function aktifAy(){ const S0=baslangic(); if(!S0) return 0; const b=bugun(); return (fark(S0,b)-kesintiGun(S0,b))/30.44; }
 const bugunAyrintili=()=>{
-  if(!baslangic()) return {baslik:'Defter',alt:'Kurulum',html:kurulum()};
+  if(!baslangic()) return {baslik:'Proof',alt:'Kurulum',html:kurulum()};
   const s=simdi(), b=bugun(); let baslik, alt=`${gunAdi(b)}, ${uzun(b)}`; const h=[];
   if(s.tip==='once'){ baslik='Başlamadan önce'; alt=`Hafta 0'a ${s.gun} gün`;
     h.push(blok('Bekle',`<h2 class="bas">Hafta 0, ${uzun(ekle(baslangic(),-7))} pazartesi başlıyor.</h2><p>O güne kadar yapılacak bir şey yok. İstersen planı şimdiden oku; takvim, uygulama ve kart hazır.</p><div class="sira">${dugme('Planı aç','#/oku/plan')}${dugme('Yolu gör','#/yol','ince')}</div>`));
@@ -558,7 +558,7 @@ const bugunAyrintili=()=>{
   else if(s.w===0){ baslik='Hafta 0: Hazırlık';
     const ad=dizi(al('hazirlik',{}).adim), L=[['#/oku/plan','Plan'],['#/oku/disiplin','Disiplin'],['#/baslangic','Beş soru'],[bolum('disiplin','5.9'),'Disiplin 5.9'],['','']];
     h.push(blok('Hazırlık',`<h2 class="bas">Yedi gün</h2>${S.hazirlik.map((x,i)=>`<label class="onay"><input type="checkbox" data-rk="hazirlik" data-yol="adim.${i}" ${ad[i]?'checked':''}><span class="kutu"></span><span><strong>${esc(x.gun)}</strong> ${md(x.metin)}${L[i][0]?` <a href="${L[i][0]}">${L[i][1]}</a>`:''}</span></label>`).join('')}
-<p class="ipucu">Hazırlık bir hafta. Yedinci gün defter eksik olsa da Hafta 1 başlıyor.</p>`)); }
+<p class="ipucu">Hazırlık bir hafta. Yedinci gün hazırlık eksik olsa da Hafta 1 başlıyor.</p>`)); }
   else baslik=s.tip==='uzatma'?`Hafta ${s.w} · uzatma`:`Hafta ${s.w}`;
   if(s.tip!=='kesinti'&&s.w>=1){ const p=aktifProgram(); if(p) h.push(gunBlogu(p)); else { const n=siradaki(); if(n) h.push(baslatBlogu(n,s)); } }
   if(s.tip!=='kesinti'){ h.push(okumaBlogu(),incelemeBlogu(),yedekBlogu(),ritimBlogu(s),notBlogu(s)); }
@@ -570,9 +570,9 @@ const bugunAyrintili=()=>{
 };
 
 /* ---------- ilk açılış, yol, kitaplık ---------- */
-const hosgeldin=()=>blok('Defter',`<h2 class="bas is">Kırk sekiz hafta, sekiz program</h2><p>Yirmi dört metinlik serinin uygulama defteri. Her gün tek iş, birkaç dakika.</p><a class="dugme dolu genis" href="#/kurulum/0">Başlayalım</a>`);
+const hosgeldin=()=>blok('Proof',`<p class="ust-yazi">Prove it to yourself.</p><h2 class="bas is">Kırk sekiz hafta, sekiz program</h2><p>Yirmi dört metinlik kişisel gelişim serisinin uygulaması. Her gün tek iş, birkaç dakika.</p><a class="dugme dolu genis" href="#/kurulum/0">Başlayalım</a>`);
 V.kurulum=r=>{ const i=Math.max(0,Math.min(3,+r.a||0)), s0=al('ayar:baslangic',''), oneri=s0||ymd(ekle(pazartesi(bugun()),14));
-  const A=[`<h2 class="bas is">Bu defter ne?</h2><p>Yirmi dört metinlik serinin uygulama defteri. Kırk sekiz hafta, sekiz program — aynı anda tek program, sırayla.</p><p>Metinleri okumak için değil, okuduğunu uygulamak için. Günde birkaç dakika.</p>`,
+  const A=[`<h2 class="bas is">Proof ne?</h2><p>Yirmi dört metinlik kişisel gelişim serisinin uygulaması. Kırk sekiz hafta, sekiz program — aynı anda tek program, sırayla.</p><p>Adı bir ilkeden geliyor: <strong>prove it to yourself</strong>, kendine kanıtla. Hikâye değil kayıt; söz değil, yapılan iş. Günde birkaç dakika.</p>`,
    `<h2 class="bas is">Nasıl işliyor?</h2><p>Her gün tek kart: bugünün işi, senin yazdığın "ne zaman, nerede" cümlesi ve tek düğme. Kötü günler için zor gün sürümü var; onu yapmak da zinciri koruyor.</p><p>Haftada bir pazar oturumu, ayda bir kısa oturum. Program bitince tek soru: varış ölçütü tuttu mu?</p>`,
    `<h2 class="bas is">Ne zaman başlıyorsun?</h2><p>Seçtiğin tarih Hafta 1'in pazartesisi. Ondan önceki hafta Hafta 0: hazırlık. Mezuniyet kırk sekiz hafta sonra.</p><label class="alan" for="bt">Hafta 1'in pazartesisi</label><input class="yazi" type="date" id="bt" value="${oneri}"><p class="ipucu">Hangi günü seçersen seç, o haftanın pazartesisine yuvarlanır.</p>`,
    `<h2 class="bas is">Kayıtların nerede duruyor?</h2><p>Her şey bu cihazda, çevrimdışı çalışıyor. Bulut kopyası istersen senkronu kur; istemezsen ayda bir yedek al — uygulama bunu kendisi hatırlatacak.</p>${s0?`<p class="el">Hafta 1: ${uzun(tarih(s0))}</p>`:''}<div class="sira">${dugme('Senkron ve yedek','#/ayarlar','ince')}</div>`];
@@ -664,7 +664,7 @@ V.bugun=()=>rehberMod()?bugunRehber():bugunAyrintili();
 function yaziBosalt(){ $$('[data-yazi]').forEach(e=>{ if(e._z){ clearTimeout(e._z); e._z=null; if(e._k) e._k(); } }); }
 const noktalar=(i,n)=>`<div class="noktalar${n>8?' cok':''}" aria-hidden="true">${Array.from({length:n},(_,j)=>`<i class="${j<=i?'dolu':''}"></i>`).join('')}</div>`;
 function bugunRehber(){
-  if(!baslangic()) return {baslik:'Defter',alt:'Hoş geldin',html:hosgeldin()};
+  if(!baslangic()) return {baslik:'Proof',alt:'Hoş geldin',html:hosgeldin()};
   const s=simdi(), b=bugun(); if(s.tip==='once'||s.tip==='kesinti') return bugunAyrintili();
   const h=[];
   if(s.w===0) h.push(hazirlikKart());
@@ -769,7 +769,7 @@ const yolAyrintili=()=>{
   const hucre=w=>{ const r=S.hafta[w]||{}, f=fazOf(w), p=ilk[w];
     return `<button class="hucre ${f?'faz'+f.no:''} ${r.program==='gecis'?'gecis':''} ${w<cur?'gecmis':''} ${w===cur?'simdi':''}" data-is="hucre" data-w="${w}" aria-pressed="${w===secili}" aria-label="Hafta ${w}"><span class="n">${w}</span>${p?`<span class="h">${p.kod}</span>`:''}</button>`; };
   const r=S.hafta[secili], hb=haftaBas(secili);
-  const detay=secili===0?`<strong>Hafta 0 — Hazırlık.</strong> Plan ve disiplin metni, defter, beş soru.`
+  const detay=secili===0?`<strong>Hafta 0 — Hazırlık.</strong> Plan ve disiplin metni, kurulum, beş soru.`
    :`<strong>Hafta ${secili}${hb?' — '+kisa(hb)+' haftası':''}</strong><br>${esc(r.etiket)}${r.oku.length?`<br>Okuma: ${r.oku.map(id=>`<a href="#/oku/${id}">${esc(docAd(id))}</a>`).join(', ')}`:''}${r.not.length?`<ul style="margin:.3rem 0 0;padding-left:1.1rem">${r.not.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}`;
   const mez=haftaBas(48), mzt=mez?ekle(mez,7):null;
   const fazlar=FAZLAR.map(f=>`<h3 class="bas">Faz ${['I','II','III','IV'][f.no-1]}: ${esc(f.ad)} <span class="aciklama">Hafta ${f.a}-${f.b}</span></h3>${f.p.map(id=>{ const p=PID[id], x=program(id);
@@ -869,7 +869,7 @@ function maddeListesi(pids){ return pids.map(pid=>`<h3 class="bas">${esc(PID[pid
 function kavramListesi(){ const l=MADDELER.filter(m=>m.kavram&&okundu(m.doc)); return l.length?`<h3 class="bas">Kavram pratikleri</h3>${l.map(maddeSatiri).join('')}`:''; }
 V.defter=r=>{
   const sek=r.a||'a', T=[['a','Metin kayıtları'],['b','Program günlüğü'],['c',rehberMod()?'Yerleşenler':'Arka plan'],['d','Değerler'],['e','Araçlar']];
-  let h=blok('',`<nav class="sekmeler" aria-label="Defter bölümleri">${T.map(([k,t])=>`<a href="#/defter/${k}"${k===sek?' aria-current="page"':''}>${t}</a>`).join('')}</nav>
+  let h=blok('',`<nav class="sekmeler" aria-label="Kayıt bölümleri">${T.map(([k,t])=>`<a href="#/defter/${k}"${k===sek?' aria-current="page"':''}>${t}</a>`).join('')}</nav>
 <div class="sira" style="margin-top:0">${dugme('Pazar','#/pazar','ince')}${dugme('Aylık oturum','#/aylik','ince')}${dugme('Başlangıç kaydı','#/baslangic','ince')}${dugme('Kesinti','#/kesinti','ince')}</div>`);
   if(sek==='a'){ const l=S.docs.filter(d=>metin(d.id).okundu);
     h+=l.length?l.map(d=>{ const m=metin(d.id); return blok(`<b>${d.no||'0'}</b>${kisa(tarih(m.okundu))}`,`<h3 class="bas" style="margin-top:0"><a href="#/oku/${d.id}">${esc(d.baslik)}</a></h3>
@@ -895,7 +895,7 @@ ${[0,1,2,3,4].map(i=>`<label class="alan">${i+1}.</label><input class="yazi" dat
      +blok('Yeter',`<h2 class="bas">Beş alanda yeterince</h2><p class="aciklama">"Bu kadarı yeterli; üstü benim değil." <a href="${bolum('yeterince','3.1')}">Yeterince 3.1</a></p>
 ${YETER.map(([k,t])=>`<label class="alan">${t}</label><textarea class="yazi" rows="1" data-rk="ayar:yeterince" data-yol="${k}" data-yazi>${esc(y[k]||'')}</textarea>`).join('')}`); }
   if(sek==='e') h+=blok('Yıllık',`<p style="margin-top:0">Bütün kayıtlar yan yana, üç soru. <a href="#/kayitokuma">Kayıt okumasını aç</a></p>`)+aracListesi();
-  return {baslik:'Defter',alt:{a:'A — metin kayıtları',b:'B — program günlüğü',c:'C — arka plan',d:'Değerler ve tanımlar',e:'Araçlar'}[sek],html:h};
+  return {baslik:'Kayıtlarım',alt:{a:'A — metin kayıtları',b:'B — program günlüğü',c:'C — arka plan',d:'Değerler ve tanımlar',e:'Araçlar'}[sek],html:h};
 };
 
 /* ================= PAZAR ================= */
@@ -915,8 +915,8 @@ ${PAZAR_S.map((q,i)=>`<label class="alan" for="p${i}"><strong>${i+1}. ${q.s}</st
 ${bosIs?`<p class="sonuc"><strong>Üç haftadır ikinci soru boş.</strong> Üretmiyorsun, hazırlanıyorsun.</p>`:''}
 ${w>0&&w%17===0?`<label class="alan" for="p9"><strong>Dört ayda bir: hâlâ doğru şeyi mi yapıyorum?</strong></label><textarea class="yazi" id="p9" rows="2" data-rk="${k}" data-yol="buyuk" data-yazi>${esc(rec.buyuk||'')}</textarea>`:''}`);
   const pr=HAFTALIK.filter(x=>w>=x.bas);
-  if(pr.length) h+=blok('Pratik',`${pr.map(x=>`<label class="onay"><input type="checkbox" data-rk="${k}" data-yol="pratik.${x.id}" ${rec.pratik&&rec.pratik[x.id]?'checked':''}><span class="kutu"></span><span>${esc(x.ad)}<small><a href="${bolum(x.k[0],x.k[1])}">${esc(docAd(x.k[0]))} ${x.k[1]}</a>${x.arac?` — <a href="#/arac/${x.arac}">defteri aç</a>`:''}</small></span></label>`).join('')}`);
-  if(ARAC.kalibrasyon.acik()&&w>=12){ const tk=kayitlar('kalibrasyon'), bk=tk.filter(x=>!x.v.sonuc).length; h+=blok('Tahmin',`<p style="margin-top:0">Kalibrasyon defteri: ${tk.length} tahmin, sonucu bekleyen ${bk}. Bu hafta birkaç tahmin ekle; sonucu belli olanları işaretle.</p><div class="sira">${dugme('Deftere git','#/arac/kalibrasyon','ince')}</div>`); }
+  if(pr.length) h+=blok('Pratik',`${pr.map(x=>`<label class="onay"><input type="checkbox" data-rk="${k}" data-yol="pratik.${x.id}" ${rec.pratik&&rec.pratik[x.id]?'checked':''}><span class="kutu"></span><span>${esc(x.ad)}<small><a href="${bolum(x.k[0],x.k[1])}">${esc(docAd(x.k[0]))} ${x.k[1]}</a>${x.arac?` — <a href="#/arac/${x.arac}">aracı aç</a>`:''}</small></span></label>`).join('')}`);
+  if(ARAC.kalibrasyon.acik()&&w>=12){ const tk=kayitlar('kalibrasyon'), bk=tk.filter(x=>!x.v.sonuc).length; h+=blok('Tahmin',`<p style="margin-top:0">Kalibrasyon defteri: ${tk.length} tahmin, sonucu bekleyen ${bk}. Bu hafta birkaç tahmin ekle; sonucu belli olanları işaretle.</p><div class="sira">${dugme('Araca git','#/arac/kalibrasyon','ince')}</div>`); }
   if(yer.length) h+=blok('C',`<p class="aciklama" style="margin-top:0">Yerleşen maddeler duruyor mu? Durmuyorsa kesinti protokolü: bir kademe geri.</p>
 ${yer.map(m=>{ const v=rec.duruyor?rec.duruyor[m.id]:undefined; return `<div style="margin:.5rem 0"><p style="margin:0">${esc(m.ad)}</p><div class="uclu" style="grid-template-columns:1fr 1fr"><button data-is="duruyor" data-k="${k}" data-id="${m.id}" data-v="1" aria-pressed="${v===true}">Duruyor</button><button data-is="duruyor" data-k="${k}" data-id="${m.id}" data-v="0" data-v2="gitti" aria-pressed="${v===false}">Düştü</button></div></div>`; }).join('')}`);
   if(degAktif) h+=blok('Değer',`<p class="aciklama" style="margin-top:0">Bu hafta her değer için bir şey yaptın mı? <a href="${bolum('degerler','3.5')}">Değerler 3.5</a></p>
@@ -935,7 +935,7 @@ const aylikAyrintili=()=>{
   let h=blok('Beş soru',`<p class="aciklama">Otuz saniye. <a href="${bolum('plan','5.2')}">Plan 5.2</a></p>${BES_S.map((q,i)=>`<label class="alan"><strong>${i+1}.</strong> ${esc(q)}</label><textarea class="yazi" rows="1" data-rk="${k}" data-yol="c${i}" data-yazi>${esc(rec['c'+i]||'')}</textarea>`).join('')}`);
   const kl=kavramListesi(); h+=blok('Geçiş',(pids.length||kl)?`<p class="aciklama" style="margin-top:0">Her madde: yerleşti mi, sürüyor mu, gitti mi? <a href="${bolum('plan','4.2')}">Plan 4.2</a></p>${maddeListesi(pids)}${kl}`:`<p>Henüz başlamış bir program ya da okunmuş bir kavram metni yok.</p>`);
   const pr=AYLIK.filter(x=>w>=x.bas);
-  if(pr.length) h+=blok('Pratik',pr.map(x=>`<label class="onay"><input type="checkbox" data-rk="${k}" data-yol="pratik.${x.id}" ${rec.pratik&&rec.pratik[x.id]?'checked':''}><span class="kutu"></span><span>${esc(x.ad)}<small><a href="${bolum(x.k[0],x.k[1])}">${esc(docAd(x.k[0]))} ${x.k[1]}</a>${x.arac?` — <a href="#/arac/${x.arac}">defteri aç</a>`:''}</small></span></label>`).join(''));
+  if(pr.length) h+=blok('Pratik',pr.map(x=>`<label class="onay"><input type="checkbox" data-rk="${k}" data-yol="pratik.${x.id}" ${rec.pratik&&rec.pratik[x.id]?'checked':''}><span class="kutu"></span><span>${esc(x.ad)}<small><a href="${bolum(x.k[0],x.k[1])}">${esc(docAd(x.k[0]))} ${x.k[1]}</a>${x.arac?` — <a href="#/arac/${x.arac}">aracı aç</a>`:''}</small></span></label>`).join(''));
   if(w>=34||kh!=null) h+=blok('Hafta',kh!=null?`<p class="buyuk-sayi">${kh.toLocaleString('tr-TR')}</p><p class="aciklama">Dört bin haftanın kabaca kalanı. Beş dakika bak, sonra kapat. <a href="${bolum('zaman','3.1')}">Zaman 3.1</a></p>`
     :`<p>Kalan haftaları görmek için ayarlara doğum yılını yaz.</p><div class="sira">${dugme('Ayarlar','#/ayarlar','ince')}</div>`);
   h+=blok('Yedek',senkronAcik()?'<p style="margin-top:0">Senkron açık; kayıtların bulutta da bir kopyası var.</p>':`<p style="margin-top:0">${yedekDurum()}</p><div class="sira"><button class="dugme" data-is="disari">Yedeği indir</button></div>`);
@@ -1028,7 +1028,7 @@ IS.tema=t=>{ koy('ayar:tema',t.dataset.v); temaUygula(); };
 DEG.bas=t=>{ if(t.value) koy('ayar:baslangic',ymd(pazartesi(tarih(t.value)))); };
 IS.giris=t=>{ const e=$('#eposta').value.trim(), p=$('#sifre').value; if(!e||!p){ bildiri('E-posta ve şifre gerekli.'); return; } senkron.giris(e,p,t.dataset.yeni==='1'); };
 IS.cikis=()=>senkron.cikis();
-IS.disari=()=>{ const b=new Blob([JSON.stringify({surum:1,tarih:new Date().toISOString(),r:depo.r})],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='defter-yedek-'+ymd(bugun())+'.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); koy('ayar:sonYedek',ymd(bugun())); bildiri('Yedek indirildi. Telefonun dışında bir yere kaydet.'); };
+IS.disari=()=>{ const b=new Blob([JSON.stringify({surum:1,tarih:new Date().toISOString(),r:depo.r})],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='proof-yedek-'+ymd(bugun())+'.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); koy('ayar:sonYedek',ymd(bugun())); bildiri('Yedek indirildi. Telefonun dışında bir yere kaydet.'); };
 let KALICI=null;
 function kaliciIste(){ try{ const d=navigator.storage; if(!d||!d.persist||!d.persisted){ KALICI='yok'; return; } d.persisted().then(p=>{ if(p){ KALICI=true; return; } if(!baslangic()){ KALICI=false; return; } return d.persist().then(ok=>{ KALICI=!!ok; }); }).catch(()=>{ KALICI='yok'; }); }catch(e){ KALICI='yok'; } }
 const kayitBoyutu=()=>senkronBoyut({r:depo.r});
@@ -1038,7 +1038,7 @@ function yedekGerekli(){ if(senkronAcik()||!baslangic()) return false; const s=s
 function yedekDurum(){ const g=yedekGun(), b=kayitBoyutu(), o=Math.round(100*b/SENKRON_SINIR);
   return `${g==null?'Henüz yedek alınmadı.':`Son yedek: ${uzun(tarih(String(al('ayar:sonYedek')).slice(0,10)))}${g>0?`, ${g} gün önce`:', bugün'}.`} Kayıt boyutu ${Math.max(1,Math.round(b/1024)).toLocaleString('tr-TR')} KB${o>=50?`; senkron sınırının %${o}'i`:''}.${KALICI===true?' Tarayıcı kalıcı depolamaya izin verdi.':KALICI===false?' Tarayıcı kalıcı depolama izni vermedi; yedek bu yüzden daha önemli.':''}`; }
 function yedekBlogu(){ if(!yedekGerekli()) return ''; const g=yedekGun(); return blok('Yedek',`<p style="margin-top:0">${g==null?'Henüz yedek alınmadı.':`Son yedek ${g} gün önce.`} Kayıtların tek kopyası bu cihazda.</p><div class="sira"><button class="dugme" data-is="disari">Yedeği indir</button>${dugme('Senkron kur','#/ayarlar','ince')}</div>`); }
-DEG.iceri=t=>{ const f=t.files[0]; if(!f) return; f.text().then(x=>{ const j=JSON.parse(x); if(!j.r) throw 0; birlestir(j.r); senkron.it(true); sonrasi(); bildiri('Yedek birleştirildi.'); }).catch(()=>bildiri('Bu dosya bir Defter yedeği değil.')); };
+DEG.iceri=t=>{ const f=t.files[0]; if(!f) return; f.text().then(x=>{ const j=JSON.parse(x); if(!j.r) throw 0; birlestir(j.r); senkron.it(true); sonrasi(); bildiri('Yedek birleştirildi.'); }).catch(()=>bildiri('Bu dosya bir Proof yedeği değil.')); };
 IS.sifirla=()=>{ if(confirm('Bu cihazdaki bütün kayıtlar silinsin mi? Senkron açıksa buluttakiler geri gelir.')){ localStorage.removeItem(ANAHTAR); location.hash='#/bugun'; location.reload(); } };
 V.ayarlar=()=>{
   const tema=al('ayar:tema','oto'), s0=al('ayar:baslangic',''), sd=senkron.durum, u=senkron.kullanici;
@@ -1058,7 +1058,7 @@ ${senkron.hata?`<p class="sonuc">${esc(senkron.hata)}</p>`:''}<div class="sira">
   +blok('Senkron',snk)
   +blok('Yedek',`<p style="margin-top:0">${yedekDurum()}</p><div class="sira" style="margin-top:0"><button class="dugme" data-is="disari">Yedeği indir</button><label class="dugme">Yedekten yükle<input type="file" accept="application/json" data-deg="iceri" class="gizli"></label></div>
 <p class="ipucu">Yükleme mevcut kayıtlarla birleştirir; hiçbir şeyi silmez.</p>`)
-  +blok('',`<div class="sira" style="margin-top:0"><button class="dugme kirmizi" data-is="sifirla">Bu cihazı sıfırla</button></div><p class="ipucu">Defter 1.6.2. Yirmi dört metin, kırk sekiz hafta.</p>`)};
+  +blok('',`<div class="sira" style="margin-top:0"><button class="dugme kirmizi" data-is="sifirla">Bu cihazı sıfırla</button></div><p class="ipucu">Proof 1.8.0 · Prove it to yourself. Yirmi dört metin, kırk sekiz hafta.</p>`)};
 };
 
 /* ================= ARAÇLAR ================= */
@@ -1139,7 +1139,7 @@ const DIKKAT_S=[['','—'],['cok','Çok'],['orta','Orta'],['az','Az'],['yok','Yo
 function kanitSira(v){ const t=v.t||{}, dp={cok:3,orta:2,az:1,yok:0}; return KANIT_K.map(([id,ad])=>{ const r=t[id]||{}; return {id,ad,saat:+r.saat||0,para:+r.para||0,dik:dp[r.dikkat]||0}; }).sort((a,b)=>b.saat-a.saat||b.para-a.para||b.dik-a.dik); }
 function kanitSonuc(v){ const s=kanitSira(v).filter(x=>x.saat||x.para||x.dik); if(!s.length) return ''; const dg=dizi(al('ayar:degerler',[])).filter(x=>x&&String(x).trim());
   return `<p style="margin-top:1rem"><strong>Yaşanan sıra</strong></p>${s.slice(0,5).map((x,i)=>`<p style="margin:.1rem 0">${i+1}. ${x.ad} <span class="aciklama">${x.saat} saat${x.para?', '+TL(x.para):''}</span></p>`).join('')}
-${dg.length?`<p style="margin-top:.8rem"><strong>Söylenen değerler</strong></p>${dg.map((x,i)=>`<p style="margin:.1rem 0" class="el">${i+1}. ${esc(x)}</p>`).join('')}<p class="ipucu">${baglantili(DOC.degerler,'Fark, 1.1\'deki aralık. Tablo, söz değil.')}</p>`:'<p class="ipucu">Söylediğin beş değeri Defter\'e yaz, yan yana gelsin. <a class="ref" href="#/defter/d">Değerler</a></p>'}`; }
+${dg.length?`<p style="margin-top:.8rem"><strong>Söylenen değerler</strong></p>${dg.map((x,i)=>`<p style="margin:.1rem 0" class="el">${i+1}. ${esc(x)}</p>`).join('')}<p class="ipucu">${baglantili(DOC.degerler,'Fark, 1.1\'deki aralık. Tablo, söz değil.')}</p>`:'<p class="ipucu">Söylediğin beş değeri yaz, yan yana gelsin. <a class="ref" href="#/defter/d">Değerler</a></p>'}`; }
 const sayiAlan=(k,yol,et,d)=>`<label class="alan">${et}</label><input class="yazi" type="number" min="0" step="any" inputmode="decimal" data-rk="${k}" data-yol="${yol}" value="${d==null?'':d}">`;
 const kalanKez=v=>+v.siklik>0&&+v.yil>0?Math.round(+v.siklik*+v.yil):null;
 function birdahaOzet(){ const l=kayitlar('birdaha').map(x=>x.v).filter(v=>kalanKez(v)!=null).sort((a,b)=>kalanKez(a)-kalanKez(b));
@@ -1337,7 +1337,7 @@ const ARAC={
   form:(k,v)=>yaziAlan(k,'iddia','1. İddia: "Ben ... biriyim"',v.iddia)
    +(v.kilit?`<p><strong>2. Tahmin:</strong> ${esc(v.tahmin||'')}</p><p class="ipucu">Kilitli: veri tahmine uydurulamaz.</p>`
      :yaziAlan(k,'tahmin','2. Tahmin: bu doğruysa kayıtta ne görmeliyim?',v.tahmin,'Somut. Veriye bakmadan önce yaz.',2)+`<div class="sira"><button class="dugme" data-is="tahminKilit" data-k="${k}" data-alan="tahmin">Tahmini kilitle</button></div>`)
-   +(v.kilit?yaziAlan(k,'veri','3. Veri: hangi kayıt, ne gösteriyor?',v.veri,'Kayıtlar Defter\'in Araçlar sekmesinde.',3)+`<label class="alan">4. Karşılaştır</label>${secimler(k,'sonuc',v.sonuc,[['tuttu','Tuttu'],['tutmadi','Tutmadı'],['kosul','Şu koşulda']])}${v.sonuc==='kosul'?yaziAlan(k,'kosul','Eğer-o zaman: hangi durumda doğru?',v.kosul,baglantili(DOC.tanima,'Daha doğru tarif (4.2).')):''}`:'')},
+   +(v.kilit?yaziAlan(k,'veri','3. Veri: hangi kayıt, ne gösteriyor?',v.veri,'Kayıtlar: Daha fazla → Araçlar.',3)+`<label class="alan">4. Karşılaştır</label>${secimler(k,'sonuc',v.sonuc,[['tuttu','Tuttu'],['tutmadi','Tutmadı'],['kosul','Şu koşulda']])}${v.sonuc==='kosul'?yaziAlan(k,'kosul','Eğer-o zaman: hangi durumda doğru?',v.kosul,baglantili(DOC.tanima,'Daha doğru tarif (4.2).')):''}`:'')},
  enerji:{ad:'Enerji haritası',doc:'tanima',b:'3.5',ozel:true,sayfa:enerjiSayfasi,acik:()=>okundu('tanima'),giris:'İki hafta, her etkinlikten sonra tek işaret: enerji verdi mi, aldı mı? Keyif değil, enerji.'},
  tahmin:{ad:'Tahmin ve sonuç',doc:'tanima',b:'3.6',acik:()=>okundu('tanima'),giris:'Önemli bir olaydan önce iki satır: ne hissedeceğim, ne kadar sürecek. Sonra karşılaştır.',ozet:tahminOzet,
   baslik:v=>v.olay||'Yeni olay',durum:v=>({abarttim:'abarttım',az:'az tahmin',tuttu:'tuttu'})[v.yon]||(v.kilit?'sonuç bekliyor':'…'),

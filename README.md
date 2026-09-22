@@ -1,6 +1,6 @@
-# Defter
+# Proof
 
-Yirmi dört metinlik kişisel gelişim serisinin uygulama defteri. Kırk sekiz hafta, sekiz program, aynı anda tek program. Her gün tek iş, birkaç dakika.
+**Prove it to yourself.** Yirmi dört metinlik kişisel gelişim serisinin uygulaması. Kırk sekiz hafta, sekiz program, aynı anda tek program. Her gün tek iş, birkaç dakika.
 
 Telefonda çalışır, internet olmadan açılır. Kayıtlar cihazda durur; istenirse iki cihaz arasında eşitlenir.
 
@@ -35,7 +35,7 @@ Kayıtlar tarayıcının deposunda durur (`localStorage`, anahtar `defter.v1`). 
 
 ## Senkron (isteğe bağlı)
 
-Telefon ve bilgisayar aynı defteri görsün diye Firebase kullanılır. `firebase-config.js` boş kalırsa uygulama yalnızca cihazda çalışır.
+Telefon ve bilgisayar aynı kayıtları görsün diye Firebase kullanılır. `firebase-config.js` boş kalırsa uygulama yalnızca cihazda çalışır.
 
 1. [Firebase konsolunda](https://console.firebase.google.com) yeni bir proje aç. Analytics gerekmez.
 2. *Authentication → Sign-in method* bölümünde **Email/Password**'ü etkinleştir. *Settings → Authorized domains* bölümüne sitenin alan adını ekle.
@@ -65,9 +65,9 @@ Telefon ve bilgisayar aynı defteri görsün diye Firebase kullanılır. `fireba
 
 5. Uygulamada *Ayarlar → Senkron → Hesap oluştur*. Diğer cihazda aynı e-posta ve şifreyle *Giriş yap*.
 
-`apiKey` gizli bir anahtar değildir; erişimi giriş ve yukarıdaki kural sınırlar: herkes yalnızca kendi defterini okuyup yazabilir. Her kayıt kendi zaman damgasıyla birleşir; aynı kayıt iki cihazda değişirse son yazılan kazanır.
+`apiKey` gizli bir anahtar değildir; erişimi giriş ve yukarıdaki kural sınırlar: herkes yalnızca kendi kayıtlarını okuyup yazabilir. Her kayıt kendi zaman damgasıyla birleşir; aynı kayıt iki cihazda değişirse son yazılan kazanır.
 
-Bütün defter tek bir Firestore belgesinde durur; belge sınırı 1 MB'tır. Tipik bir yıl bunun altında kalır. *Ayarlar* kayıt boyutunu gösterir; sınır aşılırsa uygulama buluta yazmayı durdurur ve nedenini söyler.
+Bütün kayıtlar tek bir Firestore belgesinde durur; belge sınırı 1 MB'tır. Tipik bir yıl bunun altında kalır. *Ayarlar* kayıt boyutunu gösterir; sınır aşılırsa uygulama buluta yazmayı durdurur ve nedenini söyler.
 
 ## Güncellemek
 
