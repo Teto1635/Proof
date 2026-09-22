@@ -1,4 +1,4 @@
-const SURUM='defter-1.6.1';
+const SURUM='defter-1.6.2';
 const CEKIRDEK=['./','index.html','styles.css','app.js','data.js','firebase-config.js','manifest.webmanifest','icon-192.png','icon-512.png','apple-touch-icon.png'];
 self.addEventListener('install',e=>{ e.waitUntil(caches.open(SURUM).then(c=>c.addAll(CEKIRDEK))); });
 self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>!k.startsWith(SURUM)).map(k=>caches.delete(k)))).then(()=>self.clients.claim())); });

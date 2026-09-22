@@ -1058,7 +1058,7 @@ ${senkron.hata?`<p class="sonuc">${esc(senkron.hata)}</p>`:''}<div class="sira">
   +blok('Senkron',snk)
   +blok('Yedek',`<p style="margin-top:0">${yedekDurum()}</p><div class="sira" style="margin-top:0"><button class="dugme" data-is="disari">Yedeği indir</button><label class="dugme">Yedekten yükle<input type="file" accept="application/json" data-deg="iceri" class="gizli"></label></div>
 <p class="ipucu">Yükleme mevcut kayıtlarla birleştirir; hiçbir şeyi silmez.</p>`)
-  +blok('',`<div class="sira" style="margin-top:0"><button class="dugme kirmizi" data-is="sifirla">Bu cihazı sıfırla</button></div><p class="ipucu">Defter 1.6.1. Yirmi dört metin, kırk sekiz hafta.</p>`)};
+  +blok('',`<div class="sira" style="margin-top:0"><button class="dugme kirmizi" data-is="sifirla">Bu cihazı sıfırla</button></div><p class="ipucu">Defter 1.6.2. Yirmi dört metin, kırk sekiz hafta.</p>`)};
 };
 
 /* ================= ARAÇLAR ================= */
